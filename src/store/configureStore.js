@@ -9,9 +9,9 @@ export default function () {
     reducer,
     middleware: [
       ...getDefaultMiddleware(),
+      api,
       logger({ Destination: 'console' }),
       toast,
-      api,
     ],
   });
 }
