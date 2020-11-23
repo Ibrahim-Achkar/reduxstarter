@@ -12,8 +12,17 @@ const slice = createSlice({
     lastFetch: null,
   },
   reducers: {
+    bugsRequested: (bugs, action) => {
+      bugs.loading = true;
+    },
+
     bugsReceived: (bugs, action) => {
       bugs.list = action.payload;
+      bugs.loading = false;
+    },
+
+    bugsRequestFailed: (bugs, action) => {
+      bugs.loading = false;
     },
 
     bugAssignedToUser: (bugs, action) => {
@@ -37,10 +46,12 @@ const slice = createSlice({
 });
 
 export const {
-  bugsReceived,
-  bugAssignedToUser,
   bugAdded,
   bugResolved,
+  bugAssignedToUser,
+  bugsReceived,
+  bugsRequested,
+  bugsRequestFailed,
 } = slice.actions;
 export default slice.reducer;
 
@@ -50,7 +61,9 @@ const url = '/bugs';
 export const loadBugs = () =>
   apiCallBegan({
     url,
+    onStart: bugsRequested.type,
     onSuccess: bugsReceived.type,
+    onError: bugsRequestFailed.type,
   });
 
 //Memoization functions
