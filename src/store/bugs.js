@@ -3,8 +3,6 @@ import { createSelector } from 'reselect';
 import { apiCallBegan } from './apiactions';
 import moment from 'moment';
 
-let lastId = 0;
-
 const slice = createSlice({
   name: 'bugs',
   initialState: {
@@ -28,7 +26,7 @@ const slice = createSlice({
     },
 
     bugAssignedToUser: (bugs, action) => {
-      const { bugId, userId } = action.payload;
+      const { id: bugId, userId } = action.payload;
       const index = bugs.list.findIndex((bug) => bug.id === bugId);
       bugs.list[index].userId = userId;
     },
@@ -42,7 +40,7 @@ const slice = createSlice({
   },
 });
 
-export const {
+const {
   bugAdded,
   bugResolved,
   bugAssignedToUser,
@@ -80,6 +78,24 @@ export const addBug = (bug) =>
     method: 'post',
     data: bug,
     onSuccess: bugAdded.type,
+  });
+
+//Resolving a bug
+export const resolveBug = (id) =>
+  apiCallBegan({
+    url: url + '/' + id,
+    method: 'patch',
+    data: { resolved: true },
+    onSuccess: bugResolved.type,
+  });
+
+//Assign bug to a user
+export const assignBugToUser = (bugId, userId) =>
+  apiCallBegan({
+    url: url + '/' + bugId,
+    method: 'patch',
+    data: { userId },
+    onSuccess: bugAssignedToUser.type,
   });
 
 //Memoization functions
