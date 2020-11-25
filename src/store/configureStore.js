@@ -10,7 +10,7 @@ export default function () {
     middleware: [
       ...getDefaultMiddleware(),
       api,
-      logger({ Destination: 'console' }),
+      //logger({ Destination: 'console' }),
       toast,
     ],
   });
